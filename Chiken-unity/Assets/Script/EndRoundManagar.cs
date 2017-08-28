@@ -10,6 +10,7 @@ public class EndRoundManagar : MonoBehaviour {
 	private int topScore;
 	private int roundScore;
 	private int userCoins;
+	private int userLevel;
 	public TextMeshPro scoreTxt;
 	public TextMeshPro bestTxt;
 	public TextMeshPro coinsTxt;
@@ -17,6 +18,11 @@ public class EndRoundManagar : MonoBehaviour {
 	public GameObject gift;
 	private int havePresent = 1;
 	private RandomItem rndItem;
+	private int[] giftLevel1 = new int[]{100};
+	private int[] giftLevel2 = new int[]{80,20};
+	private int[] giftLevel3 = new int[]{70,20,10};
+	private int[] giftLevel4 = new int[]{55,25,13,7};
+	private int[] giftLevel5 = new int[]{40,25,20,10,5};
 
 	public int itemCategoriesCount = 1;
 	public int itemsInCategory = 5;
@@ -38,6 +44,7 @@ public class EndRoundManagar : MonoBehaviour {
 		topScore = PlayerPrefs.GetInt ("topScore");
 		roundScore = PlayerPrefs.GetInt ("roundScore");
 		havePresent = PlayerPrefs.GetInt ("present");
+		userLevel = PlayerPrefs.GetInt ("userLevel");
 		coinsTxt.text = userCoins.ToString ();
 		scoreTxt.text = roundScore.ToString ();
 		bestTxt.text = topScore.ToString ();
@@ -100,6 +107,61 @@ public class EndRoundManagar : MonoBehaviour {
 	}
 	public void GetRandomPresent(){
 		int rndPackage = Random.Range (0, itemCategoriesCount);
+		int rnd;
+		switch(userLevel){
+		case 1:
+				randomItem = 1;
+				break;
+		case 2:
+			rnd = Random.Range (0, 100);
+			if (rnd > 79)
+				randomItem = 2;
+			else
+				randomItem = 1;
+			break;
+		case 3:
+			rnd = Random.Range (0, 100);
+			if (rnd < 70)
+				randomItem = 1;
+			else if (rnd < 90)
+				randomItem = 2;
+			else
+				randomItem = 3;
+			
+			break;
+		case 4:
+			rnd = Random.Range (0, 100);
+			if (rnd < 55)
+				randomItem = 1;
+			else if (rnd < 80)
+				randomItem = 2;
+			else if (rnd < 93)
+				randomItem = 3;
+			else
+				randomItem = 4;
+			
+			break;
+		case 5:
+			rnd = Random.Range (0, 100);
+			if (rnd < 40)
+				randomItem = 1;
+			else if (rnd < 65)
+				randomItem = 2;
+			else if (rnd < 85)
+				randomItem = 3;
+			else if (rnd < 95)
+				randomItem = 4;
+			else
+				randomItem = 5;
+			break;
+			
+		}
+		newItemID = (((rndPackage * 5) + 1) + (randomItem - 1)+10);
+		print ("newItemID = " + newItemID);
+		UpdatePlayerItemsArray (randomItem);
+
+		/*
+		int rndPackage = Random.Range (0, itemCategoriesCount);
 		int rnd = Random.Range (0, 100);
 		if (rnd == 99) {
 			randomItem = 5;
@@ -115,10 +177,10 @@ public class EndRoundManagar : MonoBehaviour {
 		newItemID = (((rndPackage * 5) + 1) + (randomItem - 1)+10);
 		print ("newItemID = " + newItemID);
 		UpdatePlayerItemsArray ();
-
+		*/
 
 	}
-	void UpdatePlayerItemsArray(){
+	void UpdatePlayerItemsArray(int randomItem){
 		//get current items array;
 		bool exsistInArray = false;
 		var userItemsArray = PlayerPrefsX.GetIntArray("userItems");
@@ -143,25 +205,13 @@ public class EndRoundManagar : MonoBehaviour {
 			DisplayGiftImgInPresent ();
 		} else {
 			//item already exsist - give coins instead
-			GetRandomCoinsPack();
+			GetRandomCoinsPack(randomItem);
 			DisplayGiftImgInPresent ();
 		}
 
 	}
-	void GetRandomCoinsPack(){
-		int rnd = Random.Range (0, 100);
-		if (rnd == 99) {
-			randomCoins = 1;
-		} else if (rnd < 99 && rnd > 90) {
-			randomCoins = 2;
-		} else if (rnd < 95 && rnd > 79) {
-			randomCoins = 1;
-		} else if (rnd < 80 && rnd > 49) {
-			randomCoins = 2;
-		} else {
-			randomCoins = 1;
-		}
-
+	void GetRandomCoinsPack(int coinsLevel){
+		randomCoins = coinsLevel;
 		PlayerPrefs.SetInt("newItemToShow",randomCoins);
 		print ("item exsist recive coins = " + randomCoins);
 	}

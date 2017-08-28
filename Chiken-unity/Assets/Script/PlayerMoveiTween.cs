@@ -101,7 +101,7 @@ public class PlayerMoveiTween : MonoBehaviour {
 		iTween.MoveBy(gameObject,iTween.Hash("y", 53.3f,"easeType", easeinType,"time", stepSpeed,"oncomplete","StopMovingAnim"));
 
 		PlayMoveSound ();
-		gameManager.SetPlayerScore ();
+		gameManager.SetPlayerScore (); //+1 to road count
 		if (spwnRoad)
 			spwnRoad.AddRoad ();
 		DestroyLastRoad ();
